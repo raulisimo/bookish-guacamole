@@ -18,12 +18,12 @@ func NewPeopleService(repository repositories.SwapiRepository) *PeopleService {
 
 // GetPeople fetches and sorts the people based on the provided sorter.
 func (s *PeopleService) GetPeople(sorter sorting.Sorter, order string) ([]models.Person, error) {
-	people, err := s.Repository.GetPeople(15)
+	people, err := s.Repository.GetPeople()  // Fetch all people
 	if err != nil {
 		return nil, err
 	}
 
-	// Sort people if a sorter is provided.
+	// Sort people if a sorter is provided
 	if sorter != nil {
 		err := sorter.Sort(people, order)
 		if err != nil {

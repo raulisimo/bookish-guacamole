@@ -1,0 +1,24 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    ports:
+      - "8080:8080"
+    networks:
+      - mercedes-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:80" # Map Nginx to port 3000
+    networks:
+      - mercedes-network
+    environment:
+      - VUE_APP_BACKEND_URL=http://backend:8080 # Environment variable for API URL
+
+networks:
+  mercedes-network:
+    driver: bridge

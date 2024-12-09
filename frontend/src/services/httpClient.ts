@@ -27,7 +27,7 @@ export class HttpClient {
     return this.request<T>(endpoint, { method: 'GET' })
   }
 
-  async post<T>(endpoint: string, body: any): Promise<T> {
+  async post<T>(endpoint: string, body: JSON): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

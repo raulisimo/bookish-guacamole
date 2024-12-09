@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"backend/internal/cache"
 	"backend/internal/config"
 	"backend/internal/controllers"
 	"backend/internal/repositories"
@@ -24,11 +25,14 @@ func NewAppContainer() *AppContainer {
 	// Load configuration
 	cfg := config.LoadConfig()
 
-	// Create an HTTP client.
+	// Create an HTTP client
 	httpClient := &http.Client{Timeout: 10 * time.Second}
 
+	// Initialize cache
+	cache := cache.NewInMemoryCache()
+
 	// Initialize repositories
-	repo := repositories.NewSwapiRepository(cfg.BaseURL, httpClient)
+	repo := repositories.NewSwapiRepository(cfg.BaseURL, httpClient, cache)
 
 	// Initialize services
 	planetService := services.NewPlanetService(repo)

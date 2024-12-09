@@ -7,10 +7,10 @@ import (
 	"time"
 )
 
-// CreatedSorter sorts by the "created" field.
+// CreatedSorter sorts by the "created" field
 type CreatedSorter struct{}
 
-// Sort sorts data by the created field in ascending or descending order.
+// Sort sorts data by the created field in ascending or descending order
 func (s *CreatedSorter) Sort(data interface{}, order string) error {
 	// Ensure data is a slice of structs that contains a "Created" field
 	v := reflect.ValueOf(data)

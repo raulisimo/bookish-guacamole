@@ -6,19 +6,19 @@ import (
 	"backend/internal/sorting"
 )
 
-// PlanetService handles the business logic for planets.
+// PlanetService handles the business logic for planets
 type PlanetService struct {
 	Repository repositories.SwapiRepository
 }
 
-// NewPlanetService creates a new instance of PlanetService.
+// NewPlanetService creates a new instance of PlanetService
 func NewPlanetService(repository repositories.SwapiRepository) *PlanetService {
 	return &PlanetService{Repository: repository}
 }
 
-// GetPlanets fetches and sorts the planets based on the provided sorter.
+// GetPlanets fetches and sorts the planets based on the provided sorter
 func (s *PlanetService) GetPlanets(sorter sorting.Sorter, order string) ([]models.Planet, error) {
-	planets, err := s.Repository.GetPlanets(15)
+	planets, err := s.Repository.GetPlanets()  // Fetch all planets
 	if err != nil {
 		return nil, err
 	}

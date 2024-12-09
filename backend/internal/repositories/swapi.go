@@ -4,36 +4,44 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
+	"backend/internal/cache"
 	"backend/internal/models"
 )
 
 // SwapiRepository defines the interface for interacting with SWAPI
 type SwapiRepository interface {
-	GetPlanets(limit int) ([]models.Planet, error) // Accept limit as parameter
-	GetPeople(limit int) ([]models.Person, error)  // Accept limit as parameter
+	GetPlanets() ([]models.Planet, error)
+	GetPeople() ([]models.Person, error)
 }
 
 // swapiRepository is the concrete implementation of SwapiRepository
 type swapiRepository struct {
 	BaseURL    string
 	HTTPClient *http.Client
+	Cache      cache.Cache      
+
 }
 
 // NewSwapiRepository creates a new instance of swapiRepository
-func NewSwapiRepository(baseURL string, client *http.Client) SwapiRepository {
-	return &swapiRepository{BaseURL: baseURL, HTTPClient: client}
+func NewSwapiRepository(baseURL string, client *http.Client, cache cache.Cache) SwapiRepository {
+	return &swapiRepository{BaseURL: baseURL, HTTPClient: client, Cache: cache}
 }
 
-// GetPlanets fetches up to 'limit' planets from SWAPI, handling pagination
-func (r *swapiRepository) GetPlanets(limit int) ([]models.Planet, error) {
+// GetPlanets fetches all planets from SWAPI, handling pagination
+func (r *swapiRepository) GetPlanets() ([]models.Planet, error) {
+	cacheKey := "planets"
+	if cachedData, found := r.Cache.Get(cacheKey); found {
+		return cachedData.([]models.Planet), nil
+	}
+
 	var allPlanets []models.Planet
 	url := fmt.Sprintf("%s/planets", r.BaseURL)
 	for {
-		// Fetch the next page of results
 		var response struct {
 			Results []models.Planet `json:"results"`
-			Next    string          `json:"next"` // URL of the next page, if any
+			Next    string          `json:"next"`
 		}
 
 		if err := r.fetchResource(url, &response); err != nil {
@@ -42,31 +50,30 @@ func (r *swapiRepository) GetPlanets(limit int) ([]models.Planet, error) {
 
 		allPlanets = append(allPlanets, response.Results...)
 
-		// If we have enough items, return them
-		if len(allPlanets) >= limit {
-			return allPlanets[:limit], nil
-		}
-
-		// If there's a next page, set the URL to the next page; otherwise, stop
 		if response.Next == "" {
 			break
 		}
 		url = response.Next
 	}
 
-	// Return the fetched planets (may be fewer than limit if no more pages)
+	// Cache the data for 15 minutes
+	r.Cache.Set(cacheKey, allPlanets, 15*time.Minute)
+
 	return allPlanets, nil
 }
 
-// GetPeople fetches up to 'limit' people from SWAPI, handling pagination
-func (r *swapiRepository) GetPeople(limit int) ([]models.Person, error) {
+func (r *swapiRepository) GetPeople() ([]models.Person, error) {
+	cacheKey := "people"
+	if cachedData, found := r.Cache.Get(cacheKey); found {
+		return cachedData.([]models.Person), nil
+	}
+
 	var allPeople []models.Person
 	url := fmt.Sprintf("%s/people", r.BaseURL)
 	for {
-		// Fetch the next page of results
 		var response struct {
 			Results []models.Person `json:"results"`
-			Next    string          `json:"next"` // URL of the next page, if any
+			Next    string          `json:"next"`
 		}
 
 		if err := r.fetchResource(url, &response); err != nil {
@@ -75,19 +82,15 @@ func (r *swapiRepository) GetPeople(limit int) ([]models.Person, error) {
 
 		allPeople = append(allPeople, response.Results...)
 
-		// If we have enough items, return them
-		if len(allPeople) >= limit {
-			return allPeople[:limit], nil
-		}
-
-		// If there's a next page, set the URL to the next page; otherwise, stop
 		if response.Next == "" {
 			break
 		}
 		url = response.Next
 	}
 
-	// Return the fetched people (may be fewer than limit if no more pages)
+	// Cache the data for 15 minutes
+	r.Cache.Set(cacheKey, allPeople, 15*time.Minute)
+
 	return allPeople, nil
 }
 

@@ -7,10 +7,10 @@ import (
 	"strings"
 )
 
-// NameSorter sorts by the "name" field.
+// NameSorter sorts by the "name" field
 type NameSorter struct{}
 
-// Sort sorts data by name in ascending or descending order.
+// Sort sorts data by name in ascending or descending order
 func (s *NameSorter) Sort(data interface{}, order string) error {
 	// Ensure data is a slice of structs that contains a "Name" field
 	v := reflect.ValueOf(data)

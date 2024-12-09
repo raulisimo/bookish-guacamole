@@ -21,11 +21,20 @@ func SetupRouter(planetController *controllers.PlanetController, peopleControlle
 	}))
 
 	// Define routes
+
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "Welcome to the Star Wars API!",
+		})
+	})
+
 	api := router.Group("/api")
 	{
 		api.GET("/planets", planetController.GetPlanets)
 		api.GET("/people", peopleController.GetPeople)
 	}
+
+
 
 	return router
 }

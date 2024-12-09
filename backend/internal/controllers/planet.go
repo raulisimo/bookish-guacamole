@@ -4,20 +4,21 @@ import (
 	"backend/internal/services"
 	"backend/internal/sorting"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
-// PlanetController handles requests related to planets.
+// PlanetController handles requests related to planets
 type PlanetController struct {
 	Service *services.PlanetService
 }
 
-// NewPlanetController creates a new instance of PlanetController.
+// NewPlanetController creates a new instance of PlanetController
 func NewPlanetController(service *services.PlanetService) *PlanetController {
 	return &PlanetController{Service: service}
 }
 
-// GetPlanets handles fetching planets with optional sorting.
+// GetPlanets handles fetching planets with optional sorting
 func (c *PlanetController) GetPlanets(ctx *gin.Context) {
 	sortParam := ctx.DefaultQuery("sort", "")  // Default to empty string if not provided
 	orderParam := ctx.DefaultQuery("order", "asc") // Default to "asc" if not provided
@@ -30,13 +31,13 @@ func (c *PlanetController) GetPlanets(ctx *gin.Context) {
 		return
 	}
 
-	// Fetch and sort the planets using the PlanetService. If sorter is nil, no sorting is applied.
+	// Fetch and sort the planets using the PlanetService. If sorter is nil, no sorting is applied
 	planets, err := c.Service.GetPlanets(sorter, orderParam)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Return the sorted planets (or unsorted if no sorter was applied) as a JSON response.
+	// Return the sorted planets (or unsorted if no sorter was applied) as a JSON response
 	ctx.JSON(http.StatusOK, planets)
 }
