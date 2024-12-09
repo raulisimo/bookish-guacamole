@@ -13,7 +13,7 @@ func SetupRouter(planetController *controllers.PlanetController, peopleControlle
 
 	// Add CORS middleware
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // Allow the frontend origin
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:6969"}, // Allow the frontend origin
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true, // Allow cookies or authentication headers

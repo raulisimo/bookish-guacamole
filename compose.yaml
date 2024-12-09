@@ -13,11 +13,13 @@ services:
       context: ./frontend
     container_name: frontend
     ports:
-      - "3000:80" # Map Nginx to port 3000
+      - "6969:80"  # Expose Nginx on port 6969 for frontend
     networks:
       - mercedes-network
     environment:
-      - VUE_APP_BACKEND_URL=http://backend:8080 # Environment variable for API URL
+      - VUE_APP_BACKEND_URL=http://backend:8080  # Use backend service URL from Docker network
+    depends_on:
+      - backend  # Ensure backend is up before frontend starts
 
 networks:
   mercedes-network:

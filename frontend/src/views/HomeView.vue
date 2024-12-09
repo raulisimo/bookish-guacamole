@@ -12,7 +12,11 @@
     <SearchBar v-model:searchQuery="searchQuery" />
     <DataTable :data="dataStore.data" :onSortChange="onSortChange" :searchQuery="searchQuery" />
     <p v-if="dataStore.error" class="text-red-500 mt-2">{{ dataStore.error }}</p>
-    <p v-if="dataStore.isLoading" class="text-gray-500 mt-2">Loading...</p>
+    <div>
+      <p v-if="dataStore.isLoading" class="loading-message">
+        <span class="spinner"></span> Loading...
+      </p>
+    </div>
   </div>
 </template>
 
@@ -51,4 +55,30 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.loading-message {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.spinner {
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
