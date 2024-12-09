@@ -10,11 +10,11 @@ import (
 
 // PeopleController handles requests related to people
 type PeopleController struct {
-	Service *services.PeopleService
+	Service services.PeopleServiceInterface
 }
 
 // NewPeopleController creates a new instance of PeopleController
-func NewPeopleController(service *services.PeopleService) *PeopleController {
+func NewPeopleController(service services.PeopleServiceInterface) *PeopleController {
 	return &PeopleController{Service: service}
 }
 

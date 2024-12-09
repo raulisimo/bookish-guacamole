@@ -10,6 +10,12 @@ import (
 	"backend/internal/models"
 )
 
+
+// Doer defines the interface for making HTTP requests (allows mocking)
+type Doer interface {
+	Get(url string) (*http.Response, error)
+}
+
 // SwapiRepository defines the interface for interacting with SWAPI
 type SwapiRepository interface {
 	GetPlanets() ([]models.Planet, error)
@@ -19,13 +25,13 @@ type SwapiRepository interface {
 // swapiRepository is the concrete implementation of SwapiRepository
 type swapiRepository struct {
 	BaseURL    string
-	HTTPClient *http.Client
+	HTTPClient Doer
 	Cache      cache.Cache      
 
 }
 
 // NewSwapiRepository creates a new instance of swapiRepository
-func NewSwapiRepository(baseURL string, client *http.Client, cache cache.Cache) SwapiRepository {
+func NewSwapiRepository(baseURL string, client Doer, cache cache.Cache) SwapiRepository {
 	return &swapiRepository{BaseURL: baseURL, HTTPClient: client, Cache: cache}
 }
 

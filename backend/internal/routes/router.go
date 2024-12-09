@@ -1,14 +1,22 @@
 package routes
 
 import (
-	"backend/internal/controllers"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(planetController *controllers.PlanetController, peopleController *controllers.PeopleController) *gin.Engine {
+// Define controller interfaces
+type PlanetController interface {
+	GetPlanets(*gin.Context)
+}
+
+type PeopleController interface {
+	GetPeople(*gin.Context)
+}
+
+func SetupRouter(planetController PlanetController, peopleController PeopleController) *gin.Engine {
 	router := gin.Default()
 
 	// Add CORS middleware

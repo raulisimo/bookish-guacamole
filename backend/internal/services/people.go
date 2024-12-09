@@ -6,6 +6,12 @@ import (
 	"backend/internal/sorting"
 )
 
+// PeopleServiceInterface is the interface that PeopleService should implement
+type PeopleServiceInterface interface {
+	GetPeople(sorter sorting.Sorter, order string) ([]models.Person, error)
+}
+
+
 // PeopleService handles the business logic for people.
 type PeopleService struct {
 	Repository repositories.SwapiRepository
